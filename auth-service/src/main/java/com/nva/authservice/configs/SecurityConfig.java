@@ -1,6 +1,5 @@
 package com.nva.authservice.configs;
 
-import com.nva.authservice.services.CustomUserDetailsService;
 import com.nva.authservice.services.impl.CustomUserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-public class AuthenticationConfig {
+public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return new CustomUserDetailsServiceImpl();
@@ -29,6 +28,7 @@ public class AuthenticationConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/v1/auth/**").permitAll();
+                    request.anyRequest().authenticated();
                 })
                 .build();
     }
