@@ -1,8 +1,12 @@
 package com.nva.authservice.controllers;
 
+import com.nva.authservice.dtos.AuthRequest;
 import com.nva.authservice.entities.User;
 import com.nva.authservice.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -10,15 +14,21 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     @Autowired
     private AuthService authService;
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/register")
     public String addNewUser(@RequestBody User user) {
         return authService.saveUser(user);
     }
 
-    @GetMapping("/token")
-    public String getToken(User user) {
-        return authService.generateToken(user.getName());
+    @PostMapping("/generateToken")
+    public String generateToken(@RequestBody AuthRequest authRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword()));
+
+        if (authentication.isAuthenticated())
+            return authService.generateToken(authRequest.getEmail());
+        throw new RuntimeException("Invalid access!");
     }
 
     @PostMapping("/validateToken")
