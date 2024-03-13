@@ -30,6 +30,12 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.signin(signInRequest));
     }
 
+    @PostMapping("/validateToken")
+    public ResponseEntity<?> validateToken(@RequestParam("token") String token) {
+        authenticationService.validateToken(token);
+        return ResponseEntity.ok(Collections.singletonMap("message", "Token is valid!"));
+    }
+
     @GetMapping("/profile")
     public ResponseEntity<UserResponse> getProfile() {
         return ResponseEntity.ok(userService.getProfile());

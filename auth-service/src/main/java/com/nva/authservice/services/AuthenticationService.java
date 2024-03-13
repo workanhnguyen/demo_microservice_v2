@@ -8,4 +8,5 @@ import com.nva.authservice.dtos.SignUpRequest;
 public interface AuthenticationService {
     void signup(SignUpRequest signUpRequest);
     JwtAuthenticationResponse signin(SignInRequest signInRequest);
+    void validateToken(String token);
 }
